@@ -20,7 +20,7 @@ Login-AzureRmAccount -Credential $Credential
 $RGName = Get-Content "D:\Password\resourcegroupname.txt"
 $RG = Get-AzureRmResourceGroup -Name $RGName
 #============================================================================================================================================
-Specify the path to the Disk2VHD tool 
+#Specify the path to the Disk2VHD tool 
 #============================================================================================================================================
 $Path = Get-Content "D:\Password\disktovhdpath.txt"
 
@@ -52,13 +52,13 @@ $VHDPath = Get-Content "D:\Password\awsvhdpath.txt"
 #============================================================================================================================================
 #Specify the drives 
 #============================================================================================================================================
-$Drives = Get-Content "D:\Password\drives.txt"
+#$Drives = Get-Content "D:\Password\drives.txt"
 
 #============================================================================================================================================
 #Start the conversion 
 #============================================================================================================================================
 $cmd  = @"
-"$ScriptDir.\disk2vhd.exe" $Drives $VHDPath\$env:computername.vhd /accepteula
+"$ScriptDir.\disk2vhd.exe" * $VHDPath\$env:computername.vhd /accepteula
 "@
 & cmd.exe /c $cmd
 
@@ -74,14 +74,20 @@ $SA = Get-AzureRmStorageAccount -Name $SAName -ResourceGroupName $RG.ResourceGro
 #============================================================================================================================================
 $SAKey = (Get-AzureRmStorageAccountKey -ResourceGroupName $RG.ResourceGroupName  -Name $SA.StorageAccountName) | ? {$_.KeyName -eq "key1"}
 $StorageContext = New-AzureStorageContext -StorageAccountName $SAName  -StorageAccountKey $SAKey.Value
-$ContainerName = "migartedtoawsvhds"
-$ContainerName = New-AzureStorageContainer -Name $ContainerName -Permission Blob  -Context $StorageContext
+$ContainerName = "migartedawsvhdstoazure"
+$ContainerName = New-AzureStorageContainer -Name $ContainerName -Permission Container  -Context $StorageContext
 
 #============================================================================================================================================
 #Upload the VHD 
 #============================================================================================================================================
-$urlOfUploadedImageVhd = ('https://' + $Sa.StorageAccountName + '.blob.core.windows.net/' + $ContainerName.Name + '/' + $env:computername)                      
-$localpath = "$VHDPath\$env:computername.vhd"
+#$urlOfUploadedImageVhd = ('https://' + $Sa.StorageAccountName + '.blob.core.windows.net/' + $ContainerName.Name + '/' + $env:computername)                      
+#$localpath = "$VHDPath\$env:computername.vhd"
+#Add-AzureRmVhd -ResourceGroupName $RG.ResourceGroupName -Destination $urlOfUploadedImageVhd -LocalFilePath $localpath
+#
+
+$urlOfUploadedImageVhd = ('https://' + $Sa.StorageAccountName + '.blob.core.windows.net/' + $ContainerName.Name + '/' + $env:computername + '-0')
+$newvhdname = ($env:computername + '-0')                     
+$localpath = "$VHDPath\$newvhdname.vhd"
 Add-AzureRmVhd -ResourceGroupName $RG.ResourceGroupName -Destination $urlOfUploadedImageVhd -LocalFilePath $localpath
 
 #============================================================================================================================================
