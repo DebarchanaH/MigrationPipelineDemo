@@ -110,7 +110,10 @@ $Subnet = Get-AzureRmVirtualNetworkSubnetConfig -Name $subnetName -VirtualNetwor
 #============================================================================================================================================
 $nsgName = Get-Content "D:\Password\nsgname.txt"
 $rdpRule = New-AzureRmNetworkSecurityRuleConfig -Name RDPRule -Description "Allow RDP" -Access Allow -Protocol Tcp -Direction Inbound -Priority 110 -SourceAddressPrefix Internet -SourcePortRange * -DestinationAddressPrefix * -DestinationPortRange 3389
-$nsg = New-AzureRmNetworkSecurityGroup -ResourceGroupName $RG.ResourceGroupName  -Location $RG.Location -Name $nsgName -SecurityRules $rdpRule
+$rcRule = New-AzureRmNetworkSecurityRuleConfig -Name RCRule -Description "Allow RC" -Access Allow -Protocol Tcp -Direction Inbound -Priority 120 -SourceAddressPrefix Internet -SourcePortRange * -DestinationAddressPrefix * -DestinationPortRange 5985
+$nsg = New-AzureRmNetworkSecurityGroup -ResourceGroupName $RG.ResourceGroupName  -Location $RG.Location -Name $nsgName -SecurityRules ($rdpRule,$rcRule)
+
+
 
 #============================================================================================================================================
 #Create a network interface card (NIC)
