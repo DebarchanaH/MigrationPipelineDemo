@@ -10,3 +10,6 @@ $RG = Get-AzureRmResourceGroup -Name $RGName
 $ipName = Get-Content "D:\Password\pip.txt"
 $publicIp = Get-AzureRmPublicIpAddress -Name $ipName -ResourceGroupName $RG.ResourceGroupName
 $publicIp.IpAddress | Out-File -FilePath D:\Password\azurenewip.txt
+
+$newname = Get-Content "D:\Password\azurenewip.txt"
+knife bootstrap windows winrm $newname -x '.\demouser1' -P 'TCS@#1234'  -N Testnode
