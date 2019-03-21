@@ -1,1 +1,1 @@
-Start-Sleep -s 2000
+Start-Sleep -s 300

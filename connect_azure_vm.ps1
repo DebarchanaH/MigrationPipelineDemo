@@ -9,10 +9,4 @@ $targetname = Get-Content "D:\Password\azurenewip.txt"
 
 $w = New-PSSession -ComputerName $targetname -Credential $Credentialvm
 
-echo "104.42.169.124    chefserver.qge32fcktqruhfmbsu3nb0f0xg.dx.internal.cloudapp.net" >> C:\Windows\System32\drivers\etc\hosts
-
-#Invoke-Command -Session $w -FilePath D:\Password\install_chrome_azure.ps1
-Exit-PSSession
-
-knife bootstrap windows winrm $targetname -x '.\demouser1' -P 'TCS@#1234'  -N Testnode
-
+Invoke-Command -Session $w -FilePath D:\Password\install_chrome_azure.ps1

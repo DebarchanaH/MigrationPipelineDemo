@@ -12,3 +12,4 @@ $publicIp = Get-AzureRmPublicIpAddress -Name $ipName -ResourceGroupName $RG.Reso
 $publicIp.IpAddress | Out-File -FilePath D:\Password\azurenewip.txt
 
 $newname = Get-Content "D:\Password\azurenewip.txt"
+$newname
